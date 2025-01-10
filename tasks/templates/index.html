@@ -1,49 +1,69 @@
 {% include 'base.html'  %}
 {% include 'home_nav.html'  %}
 
-    {% block content %}
-        <section
-      class="flex flex-1 flex-wrap justify-center gap-3 bg-[#fff0] w-10/12 md:w-11/12 h-full mb-3 rounded-2xl p-3 overflow-y-auto scrollbar-hide"
-    >
-      <!-- Task card -->
-      <div
-        class="w-[355px] flex flex-col shadow-md bg-white h-[120px] rounded-xl p-3"
-      >
-        <!-- Top -->
-        <div class="flex flex-row justify-between">
-          <!-- Left: Title and Description -->
-          <div>
-            <a         href="{% url 'add_task'%}"
->
-              <h1 class="text-green-500 font-semibold text-xl">
-                Create a ToDo App with Django
-              </h1>
+{% block content %}
+{% if messages %}
+<div class="messages w-10/12 md:w-11/12 mx-auto mt-4">
+    {% for message in messages %}
+    <div class="bg-{% if message.tags == 'success' %}green{% else %}red{% endif %}-100 border border-{% if message.tags == 'success' %}green{% else %}red{% endif %}-400 text-{% if message.tags == 'success' %}green{% else %}red{% endif %}-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">{{ message }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<section class="flex flex-1 flex-wrap justify-center gap-3 bg-[#fff0] w-10/12 md:w-11/12 h-full mb-3 rounded-2xl p-3 overflow-y-auto scrollbar-hide">
+    {% if tasks %}
+        {% for task in tasks %}
+        <!-- Task card -->
+        <div class="w-[355px] flex flex-col shadow-md {% if task.completed %}bg-gray-100{% else %}bg-white{% endif %} h-[120px] rounded-xl p-3">
+            <!-- Top -->
+            <div class="flex flex-row justify-between">
+                <!-- Left: Title and Description -->
+                <div>
+                    <a href="{% url 'task_detail' task.id %}">
+                        <h1 class="{% if task.completed %}text-gray-500{% else %}text-green-500{% endif %} font-semibold text-xl">
+                            {{ task.title }}
+                        </h1>
+                    </a>
+                    <p class="text-gray-500 text-md">
+                        {{ task.description|truncatechars:50 }}
+                    </p>
+                </div>
+                <!-- Right: Toggle complete mode -->
+                <a href="{% url 'toggle_task' task.id %}">
+                    {% if task.completed %}
+                    <i class="bx bxs-check-circle bx-sm text-blue-500"></i>
+                    {% else %}
+                    <i class="bx bx-check-circle bx-sm text-blue-500"></i>
+                    {% endif %}
+                </a>
+            </div>
+            <!-- Line -->
+            <hr class="border-t border-gray-200 my-2" />
+            <!-- Bottom: Time and Date | Delete -->
+            <div class="flex flex-row justify-between">
+                <h2 class="text-gray-500 font-bold">
+                    {% if task.due_date %}
+                    Due {{ task.due_date|date:"M d, Y" }} <span class="font-medium text-gray-400">{{ task.due_date|time:"g:i a" }}</span>
+                    {% else %}
+                    No due date
+                    {% endif %}
+                </h2>
+                <a href="{% url 'delete_task' task.id %}" onclick="return confirm('Are you sure you want to delete this task?')">
+                    <i class="bx bxs-trash bx-sm text-red-500"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="flex flex-col items-center justify-center w-full h-full">
+            <i class="bx bx-list-check bx-lg text-gray-400"></i>
+            <p class="text-gray-500 text-xl mt-4">No tasks found</p>
+            <a href="{% url 'add_task' %}" class="mt-4 bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">
+                Add Your First Task
             </a>
-            <p class="text-gray-500 text-md">
-              The app will contain the following...
-            </p>
-          </div>
-          <!-- Right: Toggle complete mode -->
-          <a href="">
-            <i class="bx bx-check-circle bx-sm text-blue-500"></i>
-            <!-- <i class='bx bxs-check-circle'></i> -->
-          </a>
         </div>
-        <!-- Line -->
-        <hr class="border-t border-gray-200 my-2" />
-        <!-- Bottom: Time and Date | Delete -->
-        <div class="flex flex-row justify-between">
-          <h2 class="text-gray-500 font-bold">
-            Due Today <span class="font-medium text-gray-400">12:00 pm</span>
-          </h2>
-          <a         href="{% url 'delete' %}"
->
-            <i class="bx bxs-trash bx-sm text-red-500"></i>
-          </a>
-        </div>
-      </div>
-    </section>
-     {% endblock content %}
-
-
-
+    {% endif %}
+</section>
+{% endblock content %}

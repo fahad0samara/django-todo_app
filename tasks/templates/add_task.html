@@ -1,103 +1,74 @@
-{% load static%}
+{% include 'base.html' %}
 
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Box Icons CSS -->
-    <link
-      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="{%  static 'style.css' %}" />
-    <title>Quick ToDo</title>
-  </head>
-  <body
-    class="bg-[#cfcfcf] flex flex-col items-center justify-center gap-4 h-screen"
-  >
-    <!-- header -->
-    <header
-      class="bg-white shadow-lg w-10/12 h-auto rounded-3xl flex flex-col sm:flex-row justify-between items-center p-5 m-7 md:w-3/6"
-    >
-      <h1 class="text-blue-600 font-bold text-[40px]">Quick ToDo</h1>
-      <a
-        class="bg-blue-600 py-2 px-4 text-white font-semibold rounded-2xl text-lg mt-4 flex items-center gap-2"
-                href="{% url 'home'%}"
-
-      >
-        <i class="bx bxs-home bx-sm"></i> Go Back
-      </a>
-    </header>
-    <h1 class="text-gray-500 font-bold text-[20px]">Add ToDo</h1>
-    <!-- Task Form -->
-    <form class="w-10/12 md:w-3/6 shadow-md bg-white rounded-2xl p-4">
-      <div class="mb-4">
-        <label
-          class="block text-gray-700 text-sm font-bold mb-2"
-          for="task-name"
-          >Task Name</label
-        >
-        <input
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="task-name"
-          type="text"
-          placeholder="Enter task name"
-          required
-        />
-      </div>
-      <div class="mb-4">
-        <label
-          class="block text-gray-700 text-sm font-bold mb-2"
-          for="task-description"
-          >Task Description</label
-        >
-        <textarea
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="task-description"
-          placeholder="Enter task description"
-        ></textarea>
-      </div>
-      <div class="mb-4 flex">
-        <div class="mr-2">
-          <label
-            class="block text-gray-700 text-sm font-bold mb-2"
-            for="due-date"
-            >Due Date</label
-          >
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="due-date"
-            type="date"
-            required
-          />
+{% block content %}
+<div class="w-10/12 md:w-11/12 mx-auto mt-8">
+    <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md">
+        <h1 class="text-2xl font-bold text-green-500 mb-6">Add New Task</h1>
+        
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="bg-{% if message.tags == 'success' %}green{% else %}red{% endif %}-100 border border-{% if message.tags == 'success' %}green{% else %}red{% endif %}-400 text-{% if message.tags == 'success' %}green{% else %}red{% endif %}-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ message }}</span>
+            </div>
+            {% endfor %}
         </div>
-        <div>
-          <label
-            class="block text-gray-700 text-sm font-bold mb-2"
-            for="due-time"
-            >Due Time</label
-          >
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="due-time"
-            type="time"
-            required
-          />
-        </div>
-      </div>
-      <div class="flex items-center justify-center">
-        <button
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          type="submit"
-        >
-          Create Task
-        </button>
-      </div>
-    </form>
+        {% endif %}
 
-    <!-- Box Icons -->
-    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
-  </body>
-</html>
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+            <div>
+                <label for="title" class="block text-sm font-medium text-gray-700">Title *</label>
+                <input type="text" name="title" id="title" required
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+            </div>
+
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                <textarea name="description" id="description" rows="4"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
+                    <select name="priority" id="priority"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                        {% for value, label in priorities %}
+                        <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                    <select name="category" id="category"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                        <option value="">No Category</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label for="due_date" class="block text-sm font-medium text-gray-700">Due Date & Time</label>
+                <input type="datetime-local" name="due_date" id="due_date"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+            </div>
+
+            <div class="flex justify-end space-x-4">
+                <a href="{% url 'home' %}"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    Cancel
+                </a>
+                <button type="submit"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    Add Task
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

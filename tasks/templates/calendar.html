@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow p-6">
+        <!-- Calendar Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">{{ current_month_name }} {{ current_year }}</h2>
+            <div class="flex space-x-2">
+                <a href="?month={{ prev_month }}&year={{ prev_year }}" class="bg-gray-100 p-2 rounded-lg hover:bg-gray-200">
+                    <i class='bx bx-chevron-left'></i>
+                </a>
+                <a href="?month={{ next_month }}&year={{ next_year }}" class="bg-gray-100 p-2 rounded-lg hover:bg-gray-200">
+                    <i class='bx bx-chevron-right'></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="grid grid-cols-7 gap-2">
+            <!-- Days of Week -->
+            {% for day in days_of_week %}
+            <div class="text-center font-semibold py-2">{{ day }}</div>
+            {% endfor %}
+
+            <!-- Calendar Days -->
+            {% for week in calendar_data %}
+                {% for day, tasks in week %}
+                    <div class="border rounded-lg p-2 min-h-[120px] {% if day == current_day %}bg-blue-50{% endif %}">
+                        {% if day != 0 %}
+                            <div class="font-semibold {% if day == current_day %}text-blue-600{% endif %}">{{ day }}</div>
+                            <div class="space-y-1 mt-1">
+                                {% for task in tasks %}
+                                <a href="{% url 'task_detail' task.id %}" 
+                                   class="block text-sm p-1 rounded-md {% if task.priority == 'high' %}bg-red-100 text-red-800{% elif task.priority == 'medium' %}bg-yellow-100 text-yellow-800{% else %}bg-green-100 text-green-800{% endif %} truncate">
+                                    {{ task.title }}
+                                </a>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick ToDo</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Box Icons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="{% url 'home' %}" class="text-2xl font-bold text-green-500">Quick ToDo</a>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="{% url 'home' %}"
+                            class="{% if request.path == '/' %}border-green-500 text-gray-900{% else %}border-transparent text-gray-500{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            All Tasks
+                        </a>
+                        <a href="{% url 'completed' %}"
+                            class="{% if 'completed' in request.path %}border-green-500 text-gray-900{% else %}border-transparent text-gray-500{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Completed
+                        </a>
+                        <a href="{% url 'remaining' %}"
+                            class="{% if 'remaining' in request.path %}border-green-500 text-gray-900{% else %}border-transparent text-gray-500{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Remaining
+                        </a>
+                        <a href="{% url 'manage_categories' %}"
+                            class="{% if 'categories' in request.path %}border-green-500 text-gray-900{% else %}border-transparent text-gray-500{% endif %} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Categories
+                        </a>
+                        <a href="{% url 'dashboard' %}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class='bx bxs-dashboard'></i> Dashboard
+                        </a>
+                        <a href="{% url 'profile' %}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class='bx bxs-user'></i> Profile
+                        </a>
+                        <a href="{% url 'calendar' %}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class='bx bx-calendar'></i> Calendar
+                        </a>
+                        <a href="{% url 'manage_labels' %}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class='bx bx-tag'></i> Labels
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <a href="{% url 'add_task' %}"
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600">
+                        <i class="bx bx-plus mr-2"></i>
+                        Add Task
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="sm:hidden bg-white border-t border-gray-200 fixed bottom-0 w-full">
+        <div class="flex justify-around">
+            <a href="{% url 'home' %}" class="flex flex-col items-center py-2 text-sm font-medium text-gray-500 hover:text-gray-900">
+                <i class="bx bx-list-ul bx-sm"></i>
+                <span>All</span>
+            </a>
+            <a href="{% url 'completed' %}" class="flex flex-col items-center py-2 text-sm font-medium text-gray-500 hover:text-gray-900">
+                <i class="bx bx-check-circle bx-sm"></i>
+                <span>Done</span>
+            </a>
+            <a href="{% url 'add_task' %}" class="flex flex-col items-center py-2 text-sm font-medium text-green-500">
+                <i class="bx bx-plus-circle bx-sm"></i>
+                <span>Add</span>
+            </a>
+            <a href="{% url 'remaining' %}" class="flex flex-col items-center py-2 text-sm font-medium text-gray-500 hover:text-gray-900">
+                <i class="bx bx-time bx-sm"></i>
+                <span>Due</span>
+            </a>
+            <a href="{% url 'manage_categories' %}" class="flex flex-col items-center py-2 text-sm font-medium text-gray-500 hover:text-gray-900">
+                <i class="bx bx-category bx-sm"></i>
+                <span>Categories</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Box Icons -->
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+</body>
+</html>
